@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ex03.GarageLogic
 {
@@ -10,12 +6,6 @@ namespace Ex03.GarageLogic
     {
         public float MaxCapacity { get; protected set; }
         public float CurrentAmount { get; protected set; }
-
-        public EnergySource(float i_MaxCapacity, float i_CurrentAmount)
-        {
-            MaxCapacity = i_MaxCapacity;
-            CurrentAmount = i_CurrentAmount;
-        }
 
         public void AddEnergy(float i_Amount)
         {

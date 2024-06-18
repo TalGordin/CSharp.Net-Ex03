@@ -12,13 +12,7 @@ namespace Ex03.GarageLogic
         public float CargoVolume { get; set; }
         public FuelEnergySource FuelSource { get; set; }
 
-        public Truck(string i_ModelName, string i_LicenseNumber, List<Tire> i_Wheels, FuelEnergySource.eFuelType i_FuelType, float i_FuelTankCapacity, float i_CurrentFuelAmount, bool i_IsCarryingHazardousMaterials, float i_CargoVolume)
-            : base(i_ModelName, i_LicenseNumber, new FuelEnergySource(i_FuelTankCapacity, i_CurrentFuelAmount, i_FuelType), i_Wheels)
-        {
-            FuelSource = new FuelEnergySource(i_FuelTankCapacity, i_CurrentFuelAmount, i_FuelType); // to ensure it will alwys be FuelEnergy source
-            IsCarryingHazardousMaterials = i_IsCarryingHazardousMaterials;
-            CargoVolume = i_CargoVolume;
-        }
+        public Truck(string i_LicenseNumber, FuelEnergySource i_EnergySource) : base(i_LicenseNumber, i_EnergySource) { }
 
         public void Refuel(float i_AmountToAdd, FuelEnergySource.eFuelType i_FuelType)
         {

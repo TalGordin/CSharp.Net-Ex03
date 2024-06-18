@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Ex03.GarageLogic;
+using static Ex03.GarageLogic.Garage;
 
 namespace Ex03.ConsoleUI
 {
@@ -16,10 +17,8 @@ namespace Ex03.ConsoleUI
 
         public void MainMenu()
         {
-            bool exit = false;
-
             printMainMenu();
-            while (!exit)
+            while (true)
             {
                 string choice = Console.ReadLine();
 
@@ -46,10 +45,6 @@ namespace Ex03.ConsoleUI
                     case "7":
                         DisplayVehicleDetails();
                         break;
-                    case "0":
-                        exit = true;
-                        Console.WriteLine("\nThank you for using the Garage Management System. Goodbye!");
-                        break;
                     default:
                         Console.WriteLine("Invalid choice. Please try again.");
                         continue;
@@ -69,7 +64,6 @@ namespace Ex03.ConsoleUI
             Console.WriteLine("5. Charge vehicle battery");
             Console.WriteLine("6. Change vehicle status");
             Console.WriteLine("7. Display vehicle details");
-            Console.WriteLine("0. Exit");
             Console.WriteLine("=======================================");
             Console.Write("Please enter your choice: ");
         }
@@ -78,30 +72,58 @@ namespace Ex03.ConsoleUI
         {
             Console.WriteLine("Enter the vehicle license number:");
             string userInput = Console.ReadLine();
-            try 
-            { 
-                m_Garage.FindVehicleByLicense(userInput);
 
-                Console.WriteLine("=======================================");
-                Console.WriteLine("           Add a New Vehicle");
-                Console.WriteLine("=======================================");
-
-                Console.WriteLine("Choose vehicle type:");
-                foreach (var type in Enum.GetValues(typeof(VehicleFactory.eVehicleType)))
-                {
-                    Console.WriteLine($"{(int)type + 1}. {type}");
-                }
-
-                VehicleFactory.eVehicleType vehicleType = getChosenVehicleType();
-
-
-
-            }
-            catch (Exception ex)
+            bool shouldAddVehicle = m_Garage.CheckWhetherToAddVehicle(userInput);
+            if (!shouldAddVehicle)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"Vehicle with the same license number already exists in the garage- vehicle status updated to \"{eVehicleStatus.InRepair}\".");
+            }
+            else
+            {
+                addNewVehicle(userInput);
             }
 
+                
+
+
+        }
+
+        private void addNewVehicle(string i_NewVehicleLicenseNumber)
+        {
+            Console.WriteLine("=======================================");
+            Console.WriteLine("           Add a New Vehicle");
+            Console.WriteLine("=======================================");
+
+            Vehicle newVehicle = getEmptyVehicle(i_NewVehicleLicenseNumber);
+            
+            
+        }
+
+        private Vehicle getEmptyVehicle(string i_NewVehicleLicenseNumber)
+        {
+            Console.WriteLine("Choose vehicle type:");
+            foreach (var type in Enum.GetValues(typeof(VehicleFactory.eVehicleType)))
+            {
+                Console.WriteLine($"{(int)type + 1}. {type}");
+            }
+
+
+            do
+            {
+                try
+                {
+                    int vehicleType = int.Parse(Console.ReadLine());
+                    Vehicle newVehicle = VehicleFactory.CreateVehicle(vehicleType, i_NewVehicleLicenseNumber);
+                    break;
+                }
+                catch (Exception exception) when (exception is ArgumentOutOfRangeException ||  exception is FormatException)
+                {
+                    printExceptionErrorMessage(exception);
+                }
+       
+            } while (true);
+
+            //return new Car(i_NewVehicleLicenseNumber);
         }
 
         //public void AddVehicle()
@@ -408,6 +430,22 @@ namespace Ex03.ConsoleUI
             {
                 Console.WriteLine($"Failed to get vehicle details: {ex.Message}");
             }
+        }
+
+        private void printExceptionErrorMessage(Exception i_Exception)
+        {
+            string errorMessage;
+            if (i_Exception is ArgumentOutOfRangeException argumentOutOfRangeException)
+            {
+                errorMessage = argumentOutOfRangeException.ParamName;
+            }
+            else
+            {
+                errorMessage = i_Exception.Message;
+            }
+
+            Console.Write($"{i_Exception.GetType()}: {errorMessage} ");
+            Console.WriteLine("Try again.");
         }
     }
 }

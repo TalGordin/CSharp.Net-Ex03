@@ -22,15 +22,17 @@ namespace Ex03.GarageLogic
             m_Vehicles = new Dictionary<string, VehicleData>();
         }
 
-        public void FindVehicleByLicense(string i_LicenseNumber)
+        public bool CheckWhetherToAddVehicle(string i_LicenseNumber)
         {
             bool foundVehicleInGarage = m_Vehicles.ContainsKey(i_LicenseNumber);
+            bool shouldAddVehicle = true;
 
             if (foundVehicleInGarage)
             {
                 m_Vehicles[i_LicenseNumber].Status = eVehicleStatus.InRepair;
-                throw new Exception($"Vehicle with the same license number already exists in the garage- vehicle status updated to \"{eVehicleStatus.InRepair}\".");
+                shouldAddVehicle = false;
             }
+            return shouldAddVehicle;
         }
         public void AddVehicle(Vehicle i_Vehicle, string i_OwnerName, string i_OwnerPhone)
         {

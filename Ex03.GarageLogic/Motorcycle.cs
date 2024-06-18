@@ -19,12 +19,15 @@ namespace Ex03.GarageLogic
         public eLicenseType LicenseType { get; set; }
         public int EngineCapacity { get; set; }
 
-        public Motorcycle(string i_ModelName, string i_LicenseNumber, EnergySource i_EnergySource, List<Tire> i_Wheels, eLicenseType i_LicenseType, int i_EngineCapacity)
-            : base(i_ModelName, i_LicenseNumber, i_EnergySource, i_Wheels)
-        {
-            LicenseType = i_LicenseType;
-            EngineCapacity = i_EngineCapacity;
-        }
+        public Motorcycle(string i_LicenseNumber, EnergySource i_EnergySource) : base(i_LicenseNumber, i_EnergySource) { }
+
+
+        //public Motorcycle(string i_ModelName, string i_LicenseNumber, EnergySource i_EnergySource, List<Tire> i_Wheels, eLicenseType i_LicenseType, int i_EngineCapacity)
+        //    : base(i_ModelName, i_LicenseNumber, i_EnergySource, i_Wheels)
+        //{
+        //    LicenseType = i_LicenseType;
+        //    EngineCapacity = i_EngineCapacity;
+        //}
 
         public override string ToString()
         {

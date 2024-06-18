@@ -10,12 +10,10 @@ namespace Ex03.GarageLogic
         public EnergySource EnergySource { get; set; }
         public List<Tire> Tires { get; set; }
 
-        public Vehicle(string i_ModelName, string i_LicenseNumber, EnergySource i_EnergySource, List<Tire> i_Wheels)
+        public Vehicle(string i_LicenseNumber, EnergySource i_EnergySource)
         {
-            ModelName = i_ModelName;
             LicenseNumber = i_LicenseNumber;
             EnergySource = i_EnergySource;
-            Tires = i_Wheels;
         }
 
         public void InflateWheelsToMax()

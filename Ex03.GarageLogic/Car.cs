@@ -27,12 +27,14 @@ namespace Ex03.GarageLogic
         public eColor Color { get; set; }
         public eNumOfDoors NumberOfDoors { get; set; }
 
-        public Car(string i_ModelName, string i_LicenseNumber, EnergySource i_EnergySource, List<Tire> i_Wheels, eColor i_Color, eNumOfDoors i_NumberOfDoors)
-            : base(i_ModelName, i_LicenseNumber, i_EnergySource, i_Wheels)
-        {
-            Color = i_Color;
-            NumberOfDoors = i_NumberOfDoors;
-        }
+        public Car(string i_LicenseNumber, EnergySource i_EnergySource) : base(i_LicenseNumber, i_EnergySource) { }
+
+        //public Car(string i_ModelName, string i_LicenseNumber, EnergySource i_EnergySource, List<Tire> i_Wheels, eColor i_Color, eNumOfDoors i_NumberOfDoors)
+        //    : base(i_ModelName, i_LicenseNumber, i_EnergySource, i_Wheels)
+        //{
+        //    Color = i_Color;
+        //    NumberOfDoors = i_NumberOfDoors;
+        //}
 
         public override string ToString()
         {
