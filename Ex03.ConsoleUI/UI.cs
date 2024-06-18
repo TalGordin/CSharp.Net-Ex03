@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Ex03.GarageLogic;
 using static Ex03.GarageLogic.Garage;
+using static Ex03.GarageLogic.Motorcycle;
 
 namespace Ex03.ConsoleUI
 {
@@ -49,6 +50,8 @@ namespace Ex03.ConsoleUI
                         Console.WriteLine("Invalid choice. Please try again.");
                         continue;
                 }
+
+                printMainMenu();
             }
         }
 
@@ -68,7 +71,7 @@ namespace Ex03.ConsoleUI
             Console.Write("Please enter your choice: ");
         }
 
-        private void addOrEditVehicle()
+        private void addOrEditVehicle() //DONE
         {
             Console.WriteLine("Enter the vehicle license number:");
             string userInput = Console.ReadLine();
@@ -82,10 +85,6 @@ namespace Ex03.ConsoleUI
             {
                 addNewVehicle(userInput);
             }
-
-                
-
-
         }
 
         private void addNewVehicle(string i_NewVehicleLicenseNumber)
@@ -94,12 +93,118 @@ namespace Ex03.ConsoleUI
             Console.WriteLine("           Add a New Vehicle");
             Console.WriteLine("=======================================");
 
-            Vehicle newVehicle = getEmptyVehicle(i_NewVehicleLicenseNumber);
-            
-            
+            Vehicle newVehicle = getNewVehicle(i_NewVehicleLicenseNumber);
+            VehiclePropertiesCollector properties = new VehiclePropertiesCollector(newVehicle);
+
+            getPropertiesFromUser(properties, newVehicle);
+            addVehicleToGarage(newVehicle);
         }
 
-        private Vehicle getEmptyVehicle(string i_NewVehicleLicenseNumber)
+        private void addVehicleToGarage(Vehicle i_NewVehicle)
+        {
+            Console.WriteLine("Enter owner name: ");
+            string ownerName = Console.ReadLine();
+            Console.WriteLine("Enter owner phone number: ");
+            do
+            {
+                string ownerPhone = Console.ReadLine();
+                try
+                {
+                    m_Garage.AddVehicle(i_NewVehicle, ownerName, ownerPhone);
+                    Console.WriteLine("Vehicle successfully added to garage!");
+                    break;
+                }
+                catch (Exception exception) when (exception is ArgumentException || exception is FormatException)
+                {
+                    printExceptionErrorMessage(exception);
+                }
+            } while (true);
+        }
+
+        private void getPropertiesFromUser(VehiclePropertiesCollector properties, Vehicle newVehicle)
+        {
+            List<Dictionary<string, Type>> DictionariesOfProperties = new List<Dictionary<string, Type>>();
+
+            DictionariesOfProperties.Add(properties.VehicleProperties);
+            DictionariesOfProperties.Add(properties.EnergySourceProperties);
+            foreach (var tire in properties.TiresProperties)
+            {
+                DictionariesOfProperties.Add(tire);
+            }
+
+            int currentTire = 0;
+
+            foreach (var dictionary in DictionariesOfProperties)
+            {
+                foreach (var property in dictionary)
+                {
+                    do
+                    {
+                        try
+                        {
+                            if (dictionary == properties.VehicleProperties)
+                            {
+                            handleProperty(property, newVehicle);
+                            }
+                            else if (dictionary == properties.EnergySourceProperties)
+                            {
+                                handleProperty(property, newVehicle.EnergySource);
+                            }
+                            else
+                            {
+                                Console.Write($"Tire #{currentTire + 1} - ");
+                                handleProperty(property, newVehicle.Tires[currentTire]);
+                            }
+                            break;
+                        }
+                        catch (Exception exception)
+                        {
+                            printExceptionErrorMessage(exception);
+                        }
+                    } while (true);
+                }
+                if (properties.TiresProperties.Contains(dictionary))
+                {
+                    currentTire++;
+                }
+            }
+        }
+
+        private void handleProperty(KeyValuePair<string, Type> i_Property, object obj)
+        {
+            Console.WriteLine($"Enter {i_Property.Key}:");
+            string input = Console.ReadLine();
+            object parsedValue;
+
+            if (i_Property.Value == typeof(string))
+            {
+                parsedValue = input;
+            }
+            else if (i_Property.Value.IsEnum)
+            {
+                parsedValue = Enum.Parse(i_Property.Value, input);
+            }
+            else
+            {
+                MethodInfo parseMethod = i_Property.Value.GetMethod("Parse", new[] { typeof(string) });
+                parsedValue = parseMethod.Invoke(null, new object[] { input });
+            }
+            //Console.WriteLine($"OBJECT TYPE = {obj.GetType()}");
+            MethodInfo setPropertyMethod = obj.GetType().GetMethod("SetProperty", new[] { typeof(string), typeof(object) });
+            
+            try
+            {
+                setPropertyMethod.Invoke(obj, new object[] { i_Property.Key, parsedValue });
+            }
+            catch (TargetInvocationException ex)
+            {
+                // Handling the inner exception
+                throw ex.InnerException;
+            }
+
+        }
+
+        private Vehicle getNewVehicle(string i_NewVehicleLicenseNumber)
         {
             Console.WriteLine("Choose vehicle type:");
             foreach (var type in Enum.GetValues(typeof(VehicleFactory.eVehicleType)))
@@ -107,13 +212,13 @@ namespace Ex03.ConsoleUI
                 Console.WriteLine($"{(int)type + 1}. {type}");
             }
 
-
+            Vehicle newVehicle;
             do
             {
                 try
                 {
                     int vehicleType = int.Parse(Console.ReadLine());
-                    Vehicle newVehicle = VehicleFactory.CreateVehicle(vehicleType, i_NewVehicleLicenseNumber);
+                    newVehicle = VehicleFactory.CreateVehicle(vehicleType - 1, i_NewVehicleLicenseNumber);
                     break;
                 }
                 catch (Exception exception) when (exception is ArgumentOutOfRangeException ||  exception is FormatException)
@@ -123,176 +228,9 @@ namespace Ex03.ConsoleUI
        
             } while (true);
 
-            //return new Car(i_NewVehicleLicenseNumber);
+            return newVehicle;
         }
 
-        //public void AddVehicle()
-        //{
-        //    Console.WriteLine("\n=======================================");
-        //    Console.WriteLine("           Add a New Vehicle");
-        //    Console.WriteLine("=======================================");
-
-        //    Console.WriteLine()
-
-
-
-
-
-
-        //    Console.WriteLine("Choose vehicle type:");
-        //    foreach (var type in Enum.GetValues(typeof(VehicleFactory.eVehicleType)))
-        //    {
-        //        Console.WriteLine($"{(int)type + 1}. {type}");
-        //    }
-
-        //    try 
-        //    {
-        //        VehicleFactory.eVehicleType vehicleType = getVehicleChosen();
-
-        //        //General info:
-        //        Console.Write("Enter model name: ");
-        //        string modelName = Console.ReadLine();
-        //        Console.Write("Enter license number: ");
-        //        string licenseNumber = Console.ReadLine();
-
-        //        //Wheels:
-        //        List<Wheel> wheels = getWheelsData();
-        //        Console.Write("Enter number of wheels: ");
-        //        int numberOfWheels = int.Parse(Console.ReadLine());
-
-        //        for (int i = 0; i < numberOfWheels; i++)
-        //        {
-        //            Console.Write($"Enter manufacturer name for wheel {i + 1}: ");
-        //            string manufacturerName = Console.ReadLine();
-
-        //            Console.Write($"Enter current air pressure for wheel {i + 1}: ");
-        //            float currentAirPressure = float.Parse(Console.ReadLine());
-
-        //            Console.Write($"Enter max air pressure for wheel {i + 1}: ");
-        //            float maxAirPressure = float.Parse(Console.ReadLine());
-
-        //            wheels.Add(new Wheel(manufacturerName, currentAirPressure, maxAirPressure));
-        //        }
-
-        //        List<object> parameters = new List<object>();
-        //        //Parameters by energy supply
-        //        switch (vehicleType)
-        //        {
-        //            case VehicleFactory.eVehicleType.Truck:
-        //                Console.Write("Is carrying hazardous materials (true/false): ");
-        //                parameters.Add(bool.Parse(Console.ReadLine()));
-
-        //                Console.Write("Enter cargo volume: ");
-        //                parameters.Add(float.Parse(Console.ReadLine()));
-        //                goto case VehicleFactory.eVehicleType.FuelCar;
-        //            case VehicleFactory.eVehicleType.FuelMotorcycle:
-        //            case VehicleFactory.eVehicleType.FuelCar:
-        //                Console.Write("Enter fuel tank capacity: ");
-        //                parameters.Add(float.Parse(Console.ReadLine()));
-
-        //                Console.Write("Enter current fuel amount: ");
-        //                parameters.Add(float.Parse(Console.ReadLine()));
-
-        //                Console.WriteLine("Choose fuel type:");
-        //                foreach (var type in Enum.GetValues(typeof(FuelEnergySource.eFuelType)))
-        //                {
-        //                    Console.WriteLine($"{(int)type}. {type}");
-        //                }
-        //                parameters.Add((FuelEnergySource.eFuelType)int.Parse(Console.ReadLine()));
-        //                break;
-
-        //            case VehicleFactory.eVehicleType.ElectricMotorcycle:
-        //            case VehicleFactory.eVehicleType.ElectricCar:
-        //                Console.Write("Enter battery capacity: ");
-        //                parameters.Add(float.Parse(Console.ReadLine()));
-
-        //                Console.Write("Enter current battery time: ");
-        //                parameters.Add(float.Parse(Console.ReadLine()));
-        //                break;
-
-        //        }
-        //        //Parameters by type
-        //        switch (vehicleType)
-        //        {
-        //            case VehicleFactory.eVehicleType.FuelMotorcycle:
-        //            case VehicleFactory.eVehicleType.ElectricMotorcycle:
-        //                Console.WriteLine("Choose license type:");
-        //                foreach (var type in Enum.GetValues(typeof(Motorcycle.eLicenseType)))
-        //                {
-        //                    Console.WriteLine($"{(int)type}. {type}");
-        //                }
-        //                parameters.Add((Motorcycle.eLicenseType)int.Parse(Console.ReadLine()));
-
-        //                Console.Write("Enter engine capacity: ");
-        //                parameters.Add(int.Parse(Console.ReadLine()));
-        //                break;
-
-        //            case VehicleFactory.eVehicleType.FuelCar:
-        //            case VehicleFactory.eVehicleType.ElectricCar:
-        //                Console.WriteLine("Choose car color:");
-        //                foreach (var color in Enum.GetValues(typeof(Car.eColor)))
-        //                {
-        //                    Console.WriteLine($"{(int)color}. {color}");
-        //                }
-        //                parameters.Add((Car.eColor)int.Parse(Console.ReadLine()));
-
-        //                Console.WriteLine("Choose number of doors:");
-        //                foreach (var door in Enum.GetValues(typeof(Car.eNumOfDoors)))
-        //                {
-        //                    Console.WriteLine($"{(int)door}. {door}");
-        //                }
-        //                parameters.Add((Car.eNumOfDoors)int.Parse(Console.ReadLine()));
-        //                break;
-        //        }
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine($"Error completing operation: {ex.Message}");
-        //        throw;
-        //    }
-
-
-        //    try
-        //    {
-        //        Vehicle vehicle = VehicleFactory.CreateVehicle(vehicleType, modelName, licenseNumber, wheels, parameters.ToArray());
-        //        Console.Write("Enter owner name: ");
-        //        string ownerName = Console.ReadLine();
-
-        //        Console.Write("Enter owner phone: ");
-        //        string ownerPhone = Console.ReadLine();
-
-        //        m_Garage.AddVehicle(vehicle, ownerName, ownerPhone);
-        //        Console.WriteLine("Vehicle added successfully!");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine($"Failed to add vehicle: {ex.Message}");
-        //    }
-        //}
-
-        //private List<Wheel> getWheelsData()
-        //{
-        //    List<Wheel> wheels = new List<Wheel>();
-        //    Console.Write("Enter number of wheels: ");
-        //    int numberOfWheels = int.Parse(Console.ReadLine());
-
-        //    for (int i = 0; i < numberOfWheels; i++)
-        //    {
-        //        Console.Write($"Enter manufacturer name for wheel {i + 1}: ");
-        //        string manufacturerName = Console.ReadLine();
-
-        //        Console.Write($"Enter current air pressure for wheel {i + 1}: ");
-        //        float currentAirPressure = float.Parse(Console.ReadLine());
-
-        //        Console.Write($"Enter max air pressure for wheel {i + 1}: ");
-        //        float maxAirPressure = float.Parse(Console.ReadLine());
-
-        //        wheels.Add(new Wheel(manufacturerName, currentAirPressure, maxAirPressure));
-        //    }
-
-        //    return wheels;
-        //}
         private VehicleFactory.eVehicleType getChosenVehicleType()
         {
             int input = int.Parse(Console.ReadLine());

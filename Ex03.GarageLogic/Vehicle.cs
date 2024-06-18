@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Services;
 
 namespace Ex03.GarageLogic
 {
@@ -10,12 +11,38 @@ namespace Ex03.GarageLogic
         public EnergySource EnergySource { get; set; }
         public List<Tire> Tires { get; set; }
 
-        public Vehicle(string i_LicenseNumber, EnergySource i_EnergySource)
+        public Vehicle(string i_LicenseNumber, EnergySource i_EnergySource, uint i_NumOfTires, float i_MaxTiresAirPressure)
         {
             LicenseNumber = i_LicenseNumber;
             EnergySource = i_EnergySource;
+            Tires = new List<Tire>();
+
+            for (int i = 0; i < i_NumOfTires; i++)
+            {
+                Tires.Add(new Tire(i_MaxTiresAirPressure));
+            }
         }
 
+        public virtual Dictionary<string, Type> GetProperties()
+        {
+            Dictionary<string, Type> properties = new Dictionary<string, Type>();
+
+            properties.Add("model name", typeof(string));
+ 
+            return properties;
+        }
+
+        public virtual void SetProperty(string i_Property, object value)
+        {
+            if (i_Property == "model name")
+            {
+                ModelName = value.ToString();
+            }
+            else
+            {
+                throw new ArgumentException("Property not found in vehicle.");
+            }
+        }
         public void InflateWheelsToMax()
         {
             foreach (Tire tire in Tires)
@@ -40,13 +67,44 @@ namespace Ex03.GarageLogic
     {
         public string ManufacturerName { get; set; }
         public float CurrentAirPressure { get; set; }
-        public float MaxAirPressure { get; set; }
+        public float MaxAirPressure { get; }
 
-        public Tire(string i_ManufacturerName, float i_CurrentAirPressure, float i_MaxAirPressure)
+        public Tire(float i_MaxAitPressure)
         {
-            ManufacturerName = i_ManufacturerName;
-            CurrentAirPressure = i_CurrentAirPressure;
-            MaxAirPressure = i_MaxAirPressure;
+            MaxAirPressure = i_MaxAitPressure;
+        }
+
+        public virtual Dictionary<string, Type> GetProperties()
+        {
+            Dictionary<string, Type> properties = new Dictionary<string, Type>();
+
+            properties.Add("manufacturer name", typeof(string));
+            properties.Add("current air pressure", CurrentAirPressure.GetType());
+
+            return properties;
+        }
+
+        public virtual void SetProperty(string i_Property, object value)
+        {
+            try
+            {
+                if (i_Property == "manufacturer name")
+                {
+                    ManufacturerName = value.ToString();
+                }
+                else if (i_Property == "current air pressure")
+                {
+                    CurrentAirPressure = (float)value;
+                }
+                else
+                {
+                    throw new ArgumentException("Property not found in object \"tire\".");
+                }
+            }
+            catch (InvalidCastException)
+            {
+                throw new FormatException("Wrong data type for this property.");
+            }
         }
 
         public void InflateToMax()
@@ -70,18 +128,6 @@ namespace Ex03.GarageLogic
                 ManufacturerName,
                 CurrentAirPressure,
                 MaxAirPressure);
-        }
-    }
-    public class ValueOutOfRangeException : Exception
-    {
-        public float MinValue { get; private set; }
-        public float MaxValue { get; private set; }
-
-        public ValueOutOfRangeException(float i_MinValue, float i_MaxValue, string i_Message)
-            : base(i_Message)
-        {
-            MinValue = i_MinValue;
-            MaxValue = i_MaxValue;
         }
     }
 }

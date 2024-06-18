@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Ex03.GarageLogic
 {
@@ -6,6 +7,19 @@ namespace Ex03.GarageLogic
     {
         public float MaxCapacity { get; protected set; }
         public float CurrentAmount { get; protected set; }
+
+        public EnergySource(float i_maxCapacity) 
+        { 
+            MaxCapacity = i_maxCapacity;
+        }
+
+        public virtual Dictionary<string, Type> GetProperties()
+        {
+            Dictionary<string, Type> properties = new Dictionary<string, Type>();
+            return properties;
+        }
+
+        public abstract void SetProperty(string i_Property, object value);
 
         public void AddEnergy(float i_Amount)
         {

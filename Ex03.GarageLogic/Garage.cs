@@ -36,13 +36,31 @@ namespace Ex03.GarageLogic
         }
         public void AddVehicle(Vehicle i_Vehicle, string i_OwnerName, string i_OwnerPhone)
         {
-            bool wasNewVehicleAdded = m_Vehicles.ContainsKey(i_Vehicle.LicenseNumber);
-            
-            m_Vehicles[i_Vehicle.LicenseNumber] = new VehicleData(i_Vehicle, i_OwnerName, i_OwnerPhone, eVehicleStatus.InRepair);
-            if (!wasNewVehicleAdded)
+            bool shouldAddVehicle = CheckWhetherToAddVehicle(i_Vehicle.LicenseNumber);
+
+            if (!shouldAddVehicle)
             {
-                throw new ArgumentException($"Vehicle with the same license number already exists in the garage- vehicle data updated, status = \"{eVehicleStatus.InRepair}\".");
+                throw new ArgumentException($"Vehicle with the same license number already exists in the garage- vehicle data updated, status = \\\"{{eVehicleStatus.InRepair}}\\\".\"");
             }
+
+            if (int.TryParse(i_OwnerPhone, out int ownerPhone))
+            {
+                m_Vehicles[i_Vehicle.LicenseNumber] = new VehicleData(i_Vehicle, i_OwnerName, i_OwnerPhone, eVehicleStatus.InRepair);
+            }
+            else
+            {
+                throw new ArgumentException("Invalid phone number.");
+            }
+            
+
+
+            //bool wasNewVehicleAdded = m_Vehicles.ContainsKey(i_Vehicle.LicenseNumber);
+
+            //m_Vehicles[i_Vehicle.LicenseNumber] = new VehicleData(i_Vehicle, i_OwnerName, i_OwnerPhone, eVehicleStatus.InRepair);
+            //if (!wasNewVehicleAdded)
+            //{
+            //    throw new ArgumentException($"Vehicle with the same license number already exists in the garage- vehicle data updated, status = \"{eVehicleStatus.InRepair}\".");
+            //}
         }
 
         public void InflateTiresToMax(string i_LicenseNumber)

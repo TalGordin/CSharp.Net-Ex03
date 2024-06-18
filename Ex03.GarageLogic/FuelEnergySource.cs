@@ -16,7 +16,38 @@ namespace Ex03.GarageLogic
             Soler
         }
 
-        public eFuelType FuelType { get; set; }
+        public eFuelType FuelType { get; }
+
+        public FuelEnergySource(eFuelType i_FuelType, float i_FuelTankCapacity) : base(i_FuelTankCapacity)
+        {
+            FuelType = i_FuelType;
+        }
+
+        public override Dictionary<string, Type> GetProperties()
+        {
+            Dictionary<string, Type> properties = base.GetProperties();
+            properties.Add("current fuel amount", typeof(float));
+            return properties;
+        }
+
+        public override void SetProperty(string i_Property, object i_Value)
+        {
+            try
+            {
+                if (i_Property == "current fuel amount")
+                {
+                    CurrentAmount = (float)i_Value;
+                }
+                else
+                {
+                    throw new ArgumentException("Property not found in \"Fuel\" energy source.");
+                }
+            }
+            catch (InvalidCastException)
+            {
+                throw new FormatException("Wrong data type for this property.");
+            }
+        }
 
         public void Refuel(float i_Amount, eFuelType i_FuelType)
         {

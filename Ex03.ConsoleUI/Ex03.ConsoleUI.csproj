@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="UI.cs" />
+    <Compile Include="VehiclePropertiesCollector.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Ex03.GarageLogic\Ex03.GarageLogic.csproj">
