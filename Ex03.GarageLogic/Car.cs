@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Ex03.GarageLogic.Motorcycle;
 
 namespace Ex03.GarageLogic
 {
@@ -39,43 +40,47 @@ namespace Ex03.GarageLogic
             return properties;
         }
 
-        public override void SetProperty(string i_Property, object value)
+        public override void SetProperty(string i_Property, string i_Value)
         {
-            try {
-                if (i_Property == "model name")
+            const bool v_IgnoreCaseSensitivity = true;
+            if (i_Property == "model name")
+            {
+                ModelName = i_Value;
+            }
+            else if (i_Property == "car color")
+            {
+                if (Enum.TryParse(i_Value, v_IgnoreCaseSensitivity, out eColor value) 
+                    && Enum.GetNames(typeof(eColor)).Contains(i_Value))
                 {
-                    ModelName = value.ToString();
-                }
-                else if (i_Property == "car color")
-                {
-                    if (Enum.IsDefined(typeof(eColor), value))
-                    {
-                        Color = (eColor)value;
-                    }
-                    else
-                    {
-                        throw new ArgumentException("Invalid value for car color.");
-                    }
-                }
-                else if (i_Property == "number of doors")
-                {
-                    if (Enum.IsDefined(typeof(eNumOfDoors), value))
-                    {
-                        NumberOfDoors = (eNumOfDoors)value;
-                    }
-                    else
-                    {
-                        throw new ArgumentException("Invalid value for number of doors.");
-                    }
+                    Color = value;
                 }
                 else
                 {
-                    throw new ArgumentException("Property not found in vehicle \"Car\".");
+                    throw new ArgumentException("Invalid value for car color.");
                 }
             }
-            catch (InvalidCastException)
+            else if (i_Property == "number of doors")
             {
-                throw new FormatException("Wrong data type for this property.");
+                int minValue = Enum.GetValues(typeof(eNumOfDoors)).Cast<int>().Min();
+                int maxValue = Enum.GetValues(typeof(eNumOfDoors)).Cast<int>().Max();
+
+                if (Enum.TryParse(i_Value, v_IgnoreCaseSensitivity, out eNumOfDoors value))
+                {
+                    if ((int)value < minValue || (int)value > maxValue)
+                    {
+                        throw new ValueOutOfRangeException(minValue, maxValue, $"Value for number of doors must be between {minValue} and {maxValue}.");
+                    }
+
+                    NumberOfDoors = value;
+                }
+                else
+                {
+                    throw new ArgumentException("Invalid value for number of doors.");
+                }
+            }
+            else
+            {
+                throw new ArgumentException("Property not found in vehicle \"Car\".");
             }
         }
         public override string ToString()

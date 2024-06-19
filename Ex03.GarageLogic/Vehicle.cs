@@ -32,11 +32,11 @@ namespace Ex03.GarageLogic
             return properties;
         }
 
-        public virtual void SetProperty(string i_Property, object value)
+        public virtual void SetProperty(string i_Property, string i_Value)
         {
             if (i_Property == "model name")
             {
-                ModelName = value.ToString();
+                ModelName = i_Value;
             }
             else
             {
@@ -84,26 +84,29 @@ namespace Ex03.GarageLogic
             return properties;
         }
 
-        public virtual void SetProperty(string i_Property, object value)
+        public virtual void SetProperty(string i_Property, string i_Value)
         {
-            try
+            if (i_Property == "manufacturer name")
             {
-                if (i_Property == "manufacturer name")
-                {
-                    ManufacturerName = value.ToString();
-                }
-                else if (i_Property == "current air pressure")
-                {
-                    CurrentAirPressure = (float)value;
-                }
-                else
-                {
-                    throw new ArgumentException("Property not found in object \"tire\".");
-                }
+                ManufacturerName = i_Value;
             }
-            catch (InvalidCastException)
+            else if (i_Property == "current air pressure")
             {
-                throw new FormatException("Wrong data type for this property.");
+                if (!(float.TryParse(i_Value, out float result)))
+                {
+                    throw new FormatException("Invalid value for current air pressure.");
+                }
+
+                if (result < 0 || result > MaxAirPressure)
+                {
+                    throw new ValueOutOfRangeException(0, MaxAirPressure, $"Value for current air pressure must be between {0} and {MaxAirPressure}.");
+                }
+
+                CurrentAirPressure = result;
+            }
+            else
+            {
+                throw new ArgumentException("Property not found in object \"tire\".");
             }
         }
 

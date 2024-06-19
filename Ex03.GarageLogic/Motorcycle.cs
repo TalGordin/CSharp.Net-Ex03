@@ -32,30 +32,43 @@ namespace Ex03.GarageLogic
             return properties;
         }
 
-        public override void SetProperty(string i_Property, object value)
+        public override void SetProperty(string i_Property, string i_Value)
         {
-            try
+            const bool v_IgnoreCaseSensitivity = true;
+            if (i_Property == "model name")
             {
-                if (i_Property == "model name")
-                {
-                    ModelName = value.ToString();
-                }
-                else if (i_Property == "driving license type")
-                {
-                    LicenseType = (eLicenseType)value;
-                }
-                else if (i_Property == "engine displacement")
-                {
-                    EngineDisplacement = (int)value;
+                ModelName = i_Value;
+            }
+            else if (i_Property == "driving license type")
+            {    
+                if (Enum.TryParse(i_Value, v_IgnoreCaseSensitivity, out eLicenseType value)
+                    && Enum.GetNames(typeof(eLicenseType)).Contains(i_Value))
+                { 
+                    LicenseType = value;
                 }
                 else
                 {
-                    throw new ArgumentException("Property not found in vehicle \"Motorcycle\".");
+                    throw new ArgumentException("Invalid value for driver license type.");
+                }  
+            }
+            else if (i_Property == "engine displacement")
+            {
+                if (int.TryParse(i_Value, out int value))
+                {
+                    if (value <= 0)
+                    {
+                        throw new ValueOutOfRangeException(0, 0, "Engine displacement can't be negative.");
+                    }
+                    EngineDisplacement = value;
+                }
+                else
+                {
+                    throw new ArgumentException("Invalid value for engine displacement.");
                 }
             }
-            catch (InvalidCastException)
+            else
             {
-                throw new FormatException("Wrong data type for this property.");
+                throw new ArgumentException("Property not found in vehicle \"Motorcycle\".");
             }
         }
 

@@ -174,34 +174,16 @@ namespace Ex03.ConsoleUI
         {
             Console.WriteLine($"Enter {i_Property.Key}:");
             string input = Console.ReadLine();
-            object parsedValue;
-
-            if (i_Property.Value == typeof(string))
-            {
-                parsedValue = input;
-            }
-            else if (i_Property.Value.IsEnum)
-            {
-                parsedValue = Enum.Parse(i_Property.Value, input);
-            }
-            else
-            {
-                MethodInfo parseMethod = i_Property.Value.GetMethod("Parse", new[] { typeof(string) });
-                parsedValue = parseMethod.Invoke(null, new object[] { input });
-            }
-            //Console.WriteLine($"OBJECT TYPE = {obj.GetType()}");
-            MethodInfo setPropertyMethod = obj.GetType().GetMethod("SetProperty", new[] { typeof(string), typeof(object) });
+            MethodInfo setPropertyMethod = obj.GetType().GetMethod("SetProperty", new[] { typeof(string), typeof(string) });
             
             try
             {
-                setPropertyMethod.Invoke(obj, new object[] { i_Property.Key, parsedValue });
+                setPropertyMethod.Invoke(obj, new object[] { i_Property.Key, input });
             }
             catch (TargetInvocationException ex)
             {
-                // Handling the inner exception
                 throw ex.InnerException;
             }
-
         }
 
         private Vehicle getNewVehicle(string i_NewVehicleLicenseNumber)

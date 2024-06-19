@@ -30,22 +30,28 @@ namespace Ex03.GarageLogic
             return properties;
         }
 
-        public override void SetProperty(string i_Property, object i_Value)
+        public override void SetProperty(string i_Property, string i_Value)
         {
-            try
+            if (i_Property == "current fuel amount")
             {
-                if (i_Property == "current fuel amount")
+                if (!float.TryParse(i_Value, out float value))
                 {
-                    CurrentAmount = (float)i_Value;
+                    throw new FormatException("Invalid value for current fuel amount.");
                 }
-                else
+
+                if (value < 0)
                 {
-                    throw new ArgumentException("Property not found in \"Fuel\" energy source.");
+                    throw new ValueOutOfRangeException(0, MaxCapacity, "Fuel amount can't be less than 0.");
                 }
+                if (value > MaxCapacity)
+                {
+                    throw new ValueOutOfRangeException(0, MaxCapacity, $"Fuel amount can't surpass max fuel amount ({MaxCapacity}).");
+                }
+                CurrentAmount = value;
             }
-            catch (InvalidCastException)
+            else
             {
-                throw new FormatException("Wrong data type for this property.");
+                throw new ArgumentException("Property not found in \"Fuel\" energy source.");
             }
         }
 

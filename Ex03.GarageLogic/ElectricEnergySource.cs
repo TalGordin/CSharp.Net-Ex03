@@ -17,22 +17,28 @@ namespace Ex03.GarageLogic
             return properties;
         }
 
-        public override void SetProperty(string i_Property, object value)
+        public override void SetProperty(string i_Property, string i_Value)
         {
-            try
+            if (i_Property == "current time until battery runs out")
             {
-                if (i_Property == "current time until battery runs out")
+                if (!float.TryParse(i_Value, out float value))
                 {
-                    CurrentAmount = (float)value;
+                    throw new FormatException("Invalid value for current time until battery runs out.");
                 }
-                else
+
+                if (value < 0)
                 {
-                    throw new ArgumentException("Property not found in \"Electric\" energy source.");
+                    throw new ValueOutOfRangeException(0, MaxCapacity, "Time can't be less than 0.");
                 }
+                if (value > MaxCapacity)
+                {
+                    throw new ValueOutOfRangeException(0, MaxCapacity, $"Current time until empty can't surpass max time set for battery ({MaxCapacity}).");
+                }
+                CurrentAmount = value;
             }
-            catch (InvalidCastException)
+            else
             {
-                throw new FormatException("Wrong data type for this property.");
+                throw new ArgumentException("Property not found in \"Electric\" energy source.");
             }
         }
 

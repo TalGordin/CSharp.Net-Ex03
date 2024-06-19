@@ -19,7 +19,7 @@ namespace Ex03.GarageLogic
             return properties;
         }
 
-        public abstract void SetProperty(string i_Property, object value);
+        public abstract void SetProperty(string i_Property, string i_Value);
 
         public void AddEnergy(float i_Amount)
         {

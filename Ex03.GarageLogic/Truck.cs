@@ -25,30 +25,40 @@ namespace Ex03.GarageLogic
             return properties;
         }
 
-        public override void SetProperty(string i_Property, object value)
+        public override void SetProperty(string i_Property, string i_Value)
         {
-            try
+            if (i_Property == "model name")
             {
-                if (i_Property == "model name")
+                ModelName = i_Value;
+            }
+            else if (i_Property == "is carrying hazardous materials")
+            {
+                if (bool.TryParse(i_Value, out bool result))
                 {
-                    ModelName = value.ToString();
-                }
-                else if (i_Property == "is carrying hazardous materials")
-                {
-                    IsCarryingHazardousMaterials = (bool)value;
-                }
-                else if (i_Property == "cargo volume")
-                {
-                    CargoVolume = (float)value;
+                    IsCarryingHazardousMaterials = result;
                 }
                 else
                 {
-                    throw new ArgumentException("Property not found in vehicle \"Truck\".");
+                    throw new FormatException("Input is not a valid boolean value.");
                 }
             }
-            catch (InvalidCastException)
+            else if (i_Property == "cargo volume")
             {
-                throw new FormatException("Wrong data type for this property.");
+                if (!float.TryParse(i_Value, out float value))
+                {
+                    throw new FormatException("Invalid value for cargo volume.");
+                }
+
+                if (value < 0)
+                {
+                    throw new ValueOutOfRangeException(0, 0, "Cargo volume can't be less than 0.");
+                }
+                    
+                CargoVolume = value;
+            }
+            else
+            {
+                throw new ArgumentException("Property not found in vehicle \"Truck\".");
             }
         }
 
