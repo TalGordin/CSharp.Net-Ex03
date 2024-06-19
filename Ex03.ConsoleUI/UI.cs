@@ -64,7 +64,7 @@ namespace Ex03.ConsoleUI
             Console.WriteLine("      Garage Management System");
             Console.WriteLine("=======================================");
             Console.WriteLine("1. Add a new vehicle");
-            Console.WriteLine("2. Display all vehicles");
+            Console.WriteLine("2. Display vehicles by filter");
             Console.WriteLine("3. Change vehicle status");
             Console.WriteLine("4. Inflate tires to max");
             Console.WriteLine("5. Refuel vehicle");
@@ -74,7 +74,7 @@ namespace Ex03.ConsoleUI
             Console.Write("Please enter your choice: ");
         }
 
-        private void addOrEditVehicle() //DONE
+        private void addOrEditVehicle()
         {
             Console.WriteLine("Enter the vehicle license number:");
             string userInput = Console.ReadLine();

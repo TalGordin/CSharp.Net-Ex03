@@ -27,16 +27,17 @@ namespace Ex03.GarageLogic
 
         public const uint NumOfTires = 5;
         public const float MaxTiresAirPressure = 31;
-        public eColor Color { get; set; }
-        public eNumOfDoors NumberOfDoors { get; set; }
+
+        private eColor m_Color;
+        private eNumOfDoors m_NumOfDoors;
 
         public Car(string i_LicenseNumber, EnergySource i_EnergySource) : base(i_LicenseNumber, i_EnergySource, NumOfTires, MaxTiresAirPressure) { }
 
         public override Dictionary<string, Type> GetProperties()
         {
             Dictionary<string, Type> properties = base.GetProperties();
-            properties.Add("car color", Color.GetType());
-            properties.Add("number of doors", NumberOfDoors.GetType());
+            properties.Add("car color", m_Color.GetType());
+            properties.Add("number of doors", m_NumOfDoors.GetType());
             return properties;
         }
 
@@ -44,8 +45,8 @@ namespace Ex03.GarageLogic
         {
             Dictionary<string, string> properties = base.GetPropertiesAndValues();
 
-            properties.Add("car color", Color.ToString());
-            properties.Add("number of doors", NumberOfDoors.ToString());
+            properties.Add("car color", m_Color.ToString());
+            properties.Add("number of doors", m_NumOfDoors.ToString());
             EnergySource.GetPropertiesAndValues(ref properties);
             properties.Add("number of tires", NumOfTires.ToString());
 
@@ -69,11 +70,18 @@ namespace Ex03.GarageLogic
                 if (Enum.TryParse(i_Value, v_IgnoreCaseSensitivity, out eColor value) 
                     && Enum.GetNames(typeof(eColor)).Contains(i_Value))
                 {
-                    Color = value;
+                    m_Color = value;
                 }
                 else
                 {
-                    throw new ArgumentException("Invalid value for car color.");
+                    StringBuilder colorsError = new StringBuilder();
+                    colorsError.Append("Invalid value for car color. Available colors are:");
+                    foreach (eColor color in Enum.GetValues(typeof(eColor)))
+                    {
+                        colorsError.Append($" {color.ToString()}");
+                    }
+                    colorsError.Append(".");
+                    throw new ArgumentException(colorsError.ToString());
                 }
             }
             else if (i_Property == "number of doors")
@@ -88,7 +96,7 @@ namespace Ex03.GarageLogic
                         throw new ValueOutOfRangeException(minValue, maxValue, $"Value for number of doors must be between {minValue} and {maxValue}.");
                     }
 
-                    NumberOfDoors = value;
+                    m_NumOfDoors = value;
                 }
                 else
                 {
@@ -104,9 +112,9 @@ namespace Ex03.GarageLogic
         {
             return string.Format("{0}Color: {1}{2}Number of Doors: {3}{2}",
                 base.ToString(),
-                Color,
+                m_Color,
                 Environment.NewLine,
-                NumberOfDoors);
+                m_NumOfDoors);
         }
     }
 }

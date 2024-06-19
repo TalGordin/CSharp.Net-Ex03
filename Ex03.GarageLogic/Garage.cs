@@ -61,16 +61,6 @@ namespace Ex03.GarageLogic
             {
                 throw new ArgumentException("Invalid phone number.");
             }
-            
-
-
-            //bool wasNewVehicleAdded = m_Vehicles.ContainsKey(i_Vehicle.LicenseNumber);
-
-            //m_Vehicles[i_Vehicle.LicenseNumber] = new VehicleData(i_Vehicle, i_OwnerName, i_OwnerPhone, eVehicleStatus.InRepair);
-            //if (!wasNewVehicleAdded)
-            //{
-            //    throw new ArgumentException($"Vehicle with the same license number already exists in the garage- vehicle data updated, status = \"{eVehicleStatus.InRepair}\".");
-            //}
         }
         public bool FindVehicleInGarage(string i_LicenseNumber)
         {
@@ -97,7 +87,7 @@ namespace Ex03.GarageLogic
             m_Vehicles[i_LicenseNumber].Vehicle.InflateWheelsToMax();
         }
 
-        public void Refuel(string i_LicenseNumber, float i_Amount, FuelEnergySource.eFuelType i_FuelType) // the instructions says diffrent functions
+        public void Refuel(string i_LicenseNumber, float i_Amount, FuelEnergySource.eFuelType i_FuelType)
         {
             if (!m_Vehicles.ContainsKey(i_LicenseNumber))
             {
@@ -115,7 +105,7 @@ namespace Ex03.GarageLogic
             }
         }
 
-        public void ChargeBattery(string i_LicenseNumber, float i_HoursToAdd)// the instructions says diffrent functions
+        public void ChargeBattery(string i_LicenseNumber, float i_HoursToAdd)
         {
             if (!m_Vehicles.ContainsKey(i_LicenseNumber))
             {

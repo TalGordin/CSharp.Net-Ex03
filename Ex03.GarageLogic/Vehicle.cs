@@ -1,15 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Remoting.Services;
 
 namespace Ex03.GarageLogic
 {
     public abstract class Vehicle
     {
-        public string ModelName { get; set; }
-        public string LicenseNumber { get; set; }
-        public EnergySource EnergySource { get; set; }
-        public List<Tire> Tires { get; set; }
+        private string m_ModelName;
+        private string m_LicenseNumber;
+        private EnergySource m_EnergySource;
+        private List<Tire> m_tires;
+
+        public string ModelName 
+        {
+            get { return m_ModelName; }
+            set { m_ModelName = value; }
+        }
+        public string LicenseNumber
+        {
+            get { return m_LicenseNumber; }
+            set { m_LicenseNumber = value; }
+        }
+        public EnergySource EnergySource
+        {
+            get { return m_EnergySource; }
+            set { m_EnergySource = value; }
+        }
+        public List<Tire> Tires
+        {
+            get { return m_tires; }
+            set { m_tires = value; }
+        }
 
         public Vehicle(string i_LicenseNumber, EnergySource i_EnergySource, uint i_NumOfTires, float i_MaxTiresAirPressure)
         {

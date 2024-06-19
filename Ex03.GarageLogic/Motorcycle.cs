@@ -17,12 +17,12 @@ namespace Ex03.GarageLogic
             B1
         }
 
-        public const uint NumOfTires = 2;
-        public const float MaxTiresAirPressure = 33;
+        public const uint k_NumOfTires = 2;
+        public const float k_MaxTiresAirPressure = 33;
         public eLicenseType LicenseType { get; set; }
         public int EngineDisplacement { get; set; }
 
-        public Motorcycle(string i_LicenseNumber, EnergySource i_EnergySource) : base(i_LicenseNumber, i_EnergySource, NumOfTires, MaxTiresAirPressure) { }
+        public Motorcycle(string i_LicenseNumber, EnergySource i_EnergySource) : base(i_LicenseNumber, i_EnergySource, k_NumOfTires, k_MaxTiresAirPressure) { }
 
         public override Dictionary<string, Type> GetProperties()
         {
@@ -39,9 +39,9 @@ namespace Ex03.GarageLogic
             properties.Add("driving license type", LicenseType.ToString());
             properties.Add("engine displacement", EngineDisplacement.ToString());
             EnergySource.GetPropertiesAndValues(ref properties);
-            properties.Add("number of tires", NumOfTires.ToString());
+            properties.Add("number of tires", k_NumOfTires.ToString());
 
-            for (int i = 0; i < NumOfTires; i++)
+            for (int i = 0; i < k_NumOfTires; i++)
             {
                 Tires[i].GetPropertiesAndValues(ref properties, i + 1);
             }
