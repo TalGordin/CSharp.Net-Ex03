@@ -28,7 +28,24 @@ namespace Ex03.GarageLogic
         {
             Dictionary<string, Type> properties = base.GetProperties();
             properties.Add("driving license type", LicenseType.GetType());
-            properties.Add("engine displacement", LicenseType.GetType());
+            properties.Add("engine displacement", EngineDisplacement.GetType());
+            return properties;
+        }
+
+        public override Dictionary<string, string> GetPropertiesAndValues()
+        {
+            Dictionary<string, string> properties = base.GetPropertiesAndValues();
+
+            properties.Add("driving license type", LicenseType.ToString());
+            properties.Add("engine displacement", EngineDisplacement.ToString());
+            EnergySource.GetPropertiesAndValues(ref properties);
+            properties.Add("number of tires", NumOfTires.ToString());
+
+            for (int i = 0; i < NumOfTires; i++)
+            {
+                Tires[i].GetPropertiesAndValues(ref properties, i + 1);
+            }
+
             return properties;
         }
 

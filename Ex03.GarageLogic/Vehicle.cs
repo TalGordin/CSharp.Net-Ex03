@@ -32,6 +32,16 @@ namespace Ex03.GarageLogic
             return properties;
         }
 
+        public virtual Dictionary<string, string> GetPropertiesAndValues()
+        {
+            Dictionary<string, string> properties = new Dictionary<string, string>();
+
+            properties.Add("vehicle type", this.GetType().Name);
+            properties.Add("license number", LicenseNumber);
+            properties.Add("model name", ModelName);
+            return properties;
+        }
+
         public virtual void SetProperty(string i_Property, string i_Value)
         {
             if (i_Property == "model name")
@@ -74,7 +84,7 @@ namespace Ex03.GarageLogic
             MaxAirPressure = i_MaxAitPressure;
         }
 
-        public virtual Dictionary<string, Type> GetProperties()
+        public Dictionary<string, Type> GetProperties()
         {
             Dictionary<string, Type> properties = new Dictionary<string, Type>();
 
@@ -82,6 +92,12 @@ namespace Ex03.GarageLogic
             properties.Add("current air pressure", CurrentAirPressure.GetType());
 
             return properties;
+        }
+        public void GetPropertiesAndValues(ref Dictionary<string, string> io_PropertiesList, int i_TireID)
+        {
+            io_PropertiesList.Add($"tire {i_TireID} manufacturer name", ManufacturerName);
+            io_PropertiesList.Add($"tire {i_TireID} max air pressure", MaxAirPressure.ToString());
+            io_PropertiesList.Add($"tire {i_TireID} current air pressure", CurrentAirPressure.ToString());
         }
 
         public virtual void SetProperty(string i_Property, string i_Value)

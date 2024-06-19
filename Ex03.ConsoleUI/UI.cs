@@ -490,20 +490,31 @@ namespace Ex03.ConsoleUI
 
         public void DisplayVehicleDetails()
         {
-            Console.WriteLine("\n=======================================");
-            Console.WriteLine("          Vehicle Details");
-            Console.WriteLine("=======================================");
-            Console.Write("Enter license number: ");
-            string licenseNumber = Console.ReadLine();
-
-            try
+            if (m_Garage.GetVehiclesAmount() == 0)
             {
-                string details = m_Garage.GetVehicleDetails(licenseNumber);
-                Console.WriteLine(details);
+                Console.WriteLine("There are no vehicles in the garage.");
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine($"Failed to get vehicle details: {ex.Message}");
+                string licenseNumber = getLegalLicenseNumber();
+
+                Console.WriteLine("\n=======================================");
+                Console.WriteLine("          Vehicle Details");
+                Console.WriteLine("=======================================");
+
+                try
+                {
+                    Dictionary<string,string> details = m_Garage.GetVehicleDetails(licenseNumber);
+                    
+                    foreach(var detail in details)
+                    {
+                        Console.WriteLine($"{detail.Key}: {detail.Value}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to get vehicle details: {ex.Message}");
+                }
             }
         }
 

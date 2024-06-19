@@ -30,6 +30,14 @@ namespace Ex03.GarageLogic
             return properties;
         }
 
+        public override void GetPropertiesAndValues(ref Dictionary<string, string> io_PropertiesList)
+        {
+            io_PropertiesList.Add("energy source", "Fuel");
+            io_PropertiesList.Add("fuel type", FuelType.ToString());
+            io_PropertiesList.Add("max fuel amount", MaxCapacity.ToString());
+            io_PropertiesList.Add("current fuel amount", CurrentAmount.ToString());
+        }
+
         public override void SetProperty(string i_Property, string i_Value)
         {
             if (i_Property == "current fuel amount")

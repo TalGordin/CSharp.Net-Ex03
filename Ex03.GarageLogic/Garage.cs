@@ -143,7 +143,7 @@ namespace Ex03.GarageLogic
             m_Vehicles[i_LicenseNumber].Status = i_NewStatus;
         }
 
-        public string GetVehicleDetails(string i_LicenseNumber)
+        public Dictionary<string,string> GetVehicleDetails(string i_LicenseNumber)
         {
             if (!m_Vehicles.ContainsKey(i_LicenseNumber))
             {
@@ -151,13 +151,7 @@ namespace Ex03.GarageLogic
             }
 
             VehicleData vehicleData = m_Vehicles[i_LicenseNumber];
-            return string.Format(
-                "Owner Name: {0}{1}Owner Phone: {2}{1}Status: {3}{1}{4}",
-                vehicleData.OwnerName,
-                Environment.NewLine,
-                vehicleData.OwnerPhone,
-                vehicleData.Status,
-                vehicleData.Vehicle);
+            return vehicleData.GetVehicleProperties();
         }
 
         /*
@@ -189,6 +183,19 @@ namespace Ex03.GarageLogic
                 OwnerName = i_OwnerName;
                 OwnerPhone = i_OwnerPhone;
                 Status = i_Status;
+            }
+
+            public Dictionary<string, string> GetVehicleProperties()
+            {
+                Dictionary<string, string> garageProperties = new Dictionary<string, string>();
+
+                garageProperties.Add("owner name", OwnerName);
+                garageProperties.Add("status in garage", Status.ToString());
+
+                Dictionary<string, string> vehicleProperties = Vehicle.GetPropertiesAndValues();
+
+                Dictionary<string, string> mergedDict = garageProperties.Concat(vehicleProperties).ToDictionary(x => x.Key, x => x.Value);
+                return mergedDict;
             }
         }
     }

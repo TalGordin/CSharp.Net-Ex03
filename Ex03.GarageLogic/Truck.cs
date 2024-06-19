@@ -25,6 +25,22 @@ namespace Ex03.GarageLogic
             return properties;
         }
 
+        public override Dictionary<string, string> GetPropertiesAndValues()
+        {
+            Dictionary<string, string> properties = base.GetPropertiesAndValues();
+
+            properties.Add("is carrying hazardous materials", IsCarryingHazardousMaterials.ToString());
+            properties.Add("cargo volume", CargoVolume.ToString());
+            EnergySource.GetPropertiesAndValues(ref properties);
+            properties.Add("number of tires", NumOfTires.ToString());
+
+            for (int i = 0; i < NumOfTires; i++)
+            {
+                Tires[i].GetPropertiesAndValues(ref properties, i + 1);
+            }
+
+            return properties;
+        }
         public override void SetProperty(string i_Property, string i_Value)
         {
             if (i_Property == "model name")

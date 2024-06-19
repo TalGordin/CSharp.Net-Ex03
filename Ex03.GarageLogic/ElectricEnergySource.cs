@@ -17,6 +17,13 @@ namespace Ex03.GarageLogic
             return properties;
         }
 
+        public override void GetPropertiesAndValues(ref Dictionary<string, string> io_PropertiesList)
+        {
+            io_PropertiesList.Add("energy source", "Electric");
+            io_PropertiesList.Add("max time until battery runs out", MaxCapacity.ToString());
+            io_PropertiesList.Add("current time until battery runs out", CurrentAmount.ToString());
+        }
+
         public override void SetProperty(string i_Property, string i_Value)
         {
             if (i_Property == "current time until battery runs out")
