@@ -22,6 +22,16 @@ namespace Ex03.GarageLogic
             m_Vehicles = new Dictionary<string, VehicleData>();
         }
 
+        public List<string> GetAllVehicleStatuses()
+        {
+            return new List<string>(Enum.GetNames(typeof(eVehicleStatus)));
+        }
+        
+        public int GetVehiclesAmount() 
+        { 
+            return m_Vehicles.Count; 
+        }
+
         public bool CheckWhetherToAddVehicle(string i_LicenseNumber)
         {
             bool foundVehicleInGarage = m_Vehicles.ContainsKey(i_LicenseNumber);
@@ -62,7 +72,21 @@ namespace Ex03.GarageLogic
             //    throw new ArgumentException($"Vehicle with the same license number already exists in the garage- vehicle data updated, status = \"{eVehicleStatus.InRepair}\".");
             //}
         }
+        public bool FindVehicleInGarage(string i_LicenseNumber)
+        {
+            bool vehicleFound = false;
 
+            foreach(var vehicle in m_Vehicles)
+            {
+                if (vehicle.Key == i_LicenseNumber)
+                {
+                    vehicleFound = true;
+                    break;
+                }
+            }
+
+            return vehicleFound;
+        }
         public void InflateTiresToMax(string i_LicenseNumber)
         {
             if (!m_Vehicles.ContainsKey(i_LicenseNumber))
